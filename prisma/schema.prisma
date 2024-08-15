@@ -19,8 +19,10 @@ model User {
     // Optional for WebAuthn support
     Authenticator Authenticator[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    Expense   Expense[]
+    Category  Category[]
 }
 
 model Account {
@@ -76,4 +78,28 @@ model Authenticator {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@id([userId, credentialID])
+}
+
+model Category {
+    id       String    @id @default(cuid())
+    name     String
+    image    String?
+    expenses Expense[]
+    userId   String
+    user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([name, userId]) // Composite unique constraint
+}
+
+model Expense {
+    id          String    @id @default(cuid())
+    amount      Float
+    description String?
+    date        DateTime
+    categoryId  String
+    userId      String
+    user        User      @relation(fields: [userId], references: [id])
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    Category    Category? @relation(fields: [categoryId], references: [id])
 }
