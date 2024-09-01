@@ -9,51 +9,111 @@ generator client {
 }
 
 model User {
-    id            String          @id @default(cuid())
-    name          String?
-    email         String          @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    // Optional for WebAuthn support
-    Authenticator Authenticator[]
+    id                 String               @id @default(cuid())
+    name               String?
+    email              String               @unique
+    emailVerified      DateTime?
+    image              String?
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @updatedAt
+    Expense            Expense[]
+    TransactionAccount TransactionAccount[]
+    Account            Account[]
+    Session            Session[]
+}
 
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    Expense   Expense[]
-    Category  Category[]
+model Category {
+    id      String    @id @default(cuid())
+    name    String
+    image   String?
+    userId  String
+    Expense Expense[]
+
+    @@unique([name, userId]) // Composite unique constraint
+}
+
+model Expense {
+    id             String       @id @default(cuid())
+    amount         Float
+    description    String?
+    date           DateTime
+    categoryId     String?
+    userId         String
+    user           User         @relation(fields: [userId], references: [id])
+    createdAt      DateTime     @default(now())
+    updatedAt      DateTime     @updatedAt
+    Category       Category?    @relation(fields: [categoryId], references: [id])
+    transaction_id String?
+    Transaction    Transaction? @relation(fields: [transaction_id], references: [transaction_id])
+}
+
+model TransactionAccount {
+    id          String        @id @default(cuid())
+    accountNo   String        @unique
+    name        String
+    type        AccountType
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    userId      String
+    user        User          @relation(fields: [userId], references: [id])
+    Transaction Transaction[]
+
+    @@map("trans_account")
+}
+
+enum AccountType {
+    BANK
+    CREDIT_CARD
+    WALLET
+    SAVINGS
+}
+
+enum TransactionType {
+    CREDIT
+    DEBIT
+}
+
+model Transaction {
+    transaction_id   String             @id @default(cuid())
+    transaction_date DateTime
+    amount           Float
+    description      String?
+    type             TransactionType
+    account_id       String
+    account          TransactionAccount @relation(fields: [account_id], references: [id])
+    Expense          Expense[]
+
+    @@map("transactions") // Ensure the model name matches the table name if you need to map it
 }
 
 model Account {
-    userId            String
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
     type              String
     provider          String
-    providerAccountId String
-    refresh_token     String?
-    access_token      String?
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
     expires_at        Int?
     token_type        String?
     scope             String?
-    id_token          String?
+    id_token          String? @db.Text
     session_state     String?
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@id([provider, providerAccountId])
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
 }
 
 model Session {
-    sessionToken String   @unique
-    userId       String
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    @@map("sessions")
 }
 
 model VerificationToken {
@@ -61,45 +121,6 @@ model VerificationToken {
     token      String
     expires    DateTime
 
-    @@id([identifier, token])
-}
-
-// Optional for WebAuthn support
-model Authenticator {
-    credentialID         String  @unique
-    userId               String
-    providerAccountId    String
-    credentialPublicKey  String
-    counter              Int
-    credentialDeviceType String
-    credentialBackedUp   Boolean
-    transports           String?
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@id([userId, credentialID])
-}
-
-model Category {
-    id       String    @id @default(cuid())
-    name     String
-    image    String?
-    expenses Expense[]
-    userId   String
-    user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([name, userId]) // Composite unique constraint
-}
-
-model Expense {
-    id          String    @id @default(cuid())
-    amount      Float
-    description String?
-    date        DateTime
-    categoryId  String
-    userId      String
-    user        User      @relation(fields: [userId], references: [id])
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    Category    Category? @relation(fields: [categoryId], references: [id])
+    @@unique([identifier, token])
+    @@map("verificationtokens")
 }

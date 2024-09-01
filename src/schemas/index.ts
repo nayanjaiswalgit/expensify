@@ -1,4 +1,5 @@
 // import { UserRole } from "@prisma/client";
+import { AccountType } from "@prisma/client";
 import * as z from "zod";
 
 export const SettingSchema = z
@@ -46,4 +47,26 @@ export const NewPasswordSchema = z.object({
 export const CategorySchema = z.object({
   name: z.string().min(1, "Category name is required"),
   image: z.string().url().optional(),
+});
+
+export const AccountSchema = z.object({
+  name: z.string().min(5, "Account name is required"),
+  accountNo: z.string().min(5, "Account Number is required"),
+  type: z.enum([
+    AccountType.BANK,
+    AccountType.CREDIT_CARD,
+    AccountType.SAVINGS,
+    AccountType.WALLET,
+  ]),
+});
+
+export const ExpenseSchema = z.object({
+  amount: z.number(),
+  description: z.string().optional().nullable(),
+  date: z.string().datetime(),
+  categoryId: z.string().optional().nullable(),
+  userId: z.string(),
+  createdAt: z.string().datetime().optional(), // Optional because it can be generated automatically
+  updatedAt: z.string().datetime().optional(), // Optional because it can be generated automatically
+  transaction_id  : z.string().optional().nullable(),
 });
