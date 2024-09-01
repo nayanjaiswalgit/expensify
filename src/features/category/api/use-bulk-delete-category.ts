@@ -8,7 +8,7 @@ export const useBulkDeleteCategory = () => {
   const mutation = useMutation<ResponseType, Error>({
     mutationFn: async () => {
       const response = await fetch("api/catergory");
-      return response.json(); 
+      return response.json();
     },
     onSuccess: () => {
       toast.success("Account deleted");

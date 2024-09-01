@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { insertAccountSchema } from "@/db/schema";
 import {
   Form,
   FormControl,
@@ -14,10 +13,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Select } from "@/components/select";
+import { accountType } from "@/lib/utils";
+import { AccountSchema } from "@/schemas";
 
-const fromSchema = insertAccountSchema.pick({
-  name: true,
-});
+const fromSchema = AccountSchema;
 
 type FormValues = z.input<typeof fromSchema>;
 
@@ -46,8 +46,9 @@ const AccountForm = ({
   };
 
   const handleDelete = () => {
-    onDelete?.();
+    onDelete();
   };
+
   return (
     <Form {...form}>
       <form
@@ -67,9 +68,48 @@ const AccountForm = ({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
+        <FormField
+          name="accountNo"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Account No.</FormLabel>
+              <FormControl>
+                <Input
+                  disabled={disabled}
+                  placeholder="Account number"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          name="type"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <Select
+                  placeholder="Select a category"
+                  options={accountType}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={disabled}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <Button className="w-full" disabled={disabled}>
           {id ? "Save chnages" : "Create Account"}
         </Button>

@@ -5,29 +5,33 @@ export const useDeleteAccount = (id: string) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error>({
-    mutationFn: async (data) => {
-      const response = await fetch("/api/accounts", {
+    mutationFn: async () => {
+      const response = await fetch(`/api/accounts/${id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to Delete category with ID ${id}`);
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to delete account");
       }
 
-      return response.json();
+      if (response.status !== 204) {
+        return response.json();
+      }
+      return;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Assuming data is as expected
+      toast.success("Successfully deleted account");
       queryClient.invalidateQueries({ queryKey: ["account", { id }] });
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
     onError: (error) => {
-      toast.error("Failed to create account");
+      // Improved error display
+      toast.error(`Failed to delete account: ${error.message}`);
     },
   });
+
   return mutation;
 };

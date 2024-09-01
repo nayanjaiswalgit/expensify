@@ -83,7 +83,7 @@ model Transaction {
     account          TransactionAccount @relation(fields: [account_id], references: [id])
     Expense          Expense[]
 
-    @@map("transactions") // Ensure the model name matches the table name if you need to map it
+    @@map("transactions")
 }
 
 model Account {

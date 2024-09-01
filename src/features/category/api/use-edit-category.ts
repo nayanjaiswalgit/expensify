@@ -14,16 +14,15 @@ export const useEditCategory = (id: string) => {
         },
         body: JSON.stringify(data),
       });
-
       if (!response.ok) {
         throw new Error(`Failed to update category with ID ${id}`);
       }
-
       return response.json();
     },
+
     onSuccess: () => {
-      toast.success("Account Deleted");
-      queryClient.invalidateQueries({ queryKey: ["category", { id }] });
+      toast.success("Category updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["category", id] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       // queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },

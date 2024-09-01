@@ -13,6 +13,15 @@ export const insertAccountSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
+export const insertTransactionAccountSchema = z.object({
+  name: z.string(),
+  accountNo: z.string(),
+});
+
+export const insertCategorySchema = z.object({
+  name: z.string(),
+});
+
 // export const accounts = pgTable("accounts",
 //   {
 //     id: text("id").primaryKey(),

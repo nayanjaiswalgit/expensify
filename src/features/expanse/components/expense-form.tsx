@@ -20,8 +20,6 @@ const formSchema = ExpenseSchema.pick({
   amount: true,
   description: true,
   date: true,
-  categoryId: true,
-  transaction_id: true,
 });
 
 type FormValues = z.input<typeof formSchema>;
@@ -74,6 +72,7 @@ const ExpenseForm = ({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -85,12 +84,13 @@ const ExpenseForm = ({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Input
-                  type="text" // Change the type to 'text
+                  type="text"
                   disabled={disabled}
                   placeholder="e.g. Rent, Groceries"
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -103,6 +103,7 @@ const ExpenseForm = ({
               <FormControl>
                 <Input type="date" disabled={disabled} {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

@@ -33,3 +33,22 @@ export const minimalDate = (date: Date): string => {
   const newDate = new Date(date);
   return newDate.toLocaleString("en-US", { month: "short", day: "numeric" });
 };
+
+export const accountType = [
+  {
+    label: "Credit Card",
+    value: "CREDIT_CARD",
+  },
+  {
+    label: "Wallet",
+    value: "WALLET",
+  },
+  {
+    label: "Savings",
+    value: "SAVINGS",
+  },
+  {
+    label: "Bank",
+    value: "BANK",
+  },
+];

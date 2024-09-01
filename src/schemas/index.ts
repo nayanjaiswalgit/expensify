@@ -68,5 +68,5 @@ export const ExpenseSchema = z.object({
   userId: z.string(),
   createdAt: z.string().datetime().optional(), // Optional because it can be generated automatically
   updatedAt: z.string().datetime().optional(), // Optional because it can be generated automatically
-  transaction_id  : z.string().optional().nullable(),
+  transaction_id: z.string().optional().nullable(),
 });

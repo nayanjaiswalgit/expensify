@@ -97,6 +97,8 @@ const TransactionForm = ({
                   disabled={disabled}
                 />
               </FormControl>
+
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -116,6 +118,7 @@ const TransactionForm = ({
                   disabled={disabled}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -132,6 +135,7 @@ const TransactionForm = ({
                   disabled={disabled}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -149,6 +153,7 @@ const TransactionForm = ({
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -166,6 +171,7 @@ const TransactionForm = ({
                   disabled={disabled}
                 />
               </FormControl>
+              <FormMessage />        <FormMessage />
             </FormItem>
           )}
         />

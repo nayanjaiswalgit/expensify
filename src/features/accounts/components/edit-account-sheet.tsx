@@ -28,7 +28,7 @@ const EditAccountSheet = () => {
   const deleteMutation = useDeleteAccount(id);
 
   const isLoading = accountQuery.isLoading;
-  const isPending = editMutation.isPending || deleteMutation.isPending;
+  const isPending = false;
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",
     "You are about to delete this transaction"
@@ -44,22 +44,25 @@ const EditAccountSheet = () => {
   const defaultValues = accountQuery.data
     ? {
         name: accountQuery.data.name,
+        accountNo: accountQuery.data.accountNo,
+        type: accountQuery.data.type,
       }
     : {
         name: "",
+        accountNo: "",
+        type: "",
       };
 
   const onDelete = async () => {
     const ok = await confirm();
     if (ok) {
       deleteMutation.mutate(undefined, {
-        onSucess: () => {
+        onSuccess: () => {
           onClose();
         },
       });
     }
   };
-
   return (
     <>
       <ConfirmDialog />
@@ -77,6 +80,7 @@ const EditAccountSheet = () => {
             </div>
           ) : (
             <AccountForm
+              id={id}
               onSubmit={onSubmit}
               disabled={isPending}
               defaultValue={defaultValues}

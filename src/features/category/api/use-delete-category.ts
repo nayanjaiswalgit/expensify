@@ -6,20 +6,19 @@ export const useDeleteCategory = (id: string) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error>({
-    mutationFn: async (data) => {
-      const response = await fetch("/api/categories", {
+    mutationFn: async () => {
+      const response = await fetch(`/api/categories/${id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to Delete category with ID ${id}`);
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to delete category");
       }
-
-      return response.json();
+      if (response.status !== 204) {
+        return response.json();
+      }
+      return;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["category", { id }] });
@@ -27,7 +26,7 @@ export const useDeleteCategory = (id: string) => {
       // queryClient.invalidateQueries({ queryKey: ["transactions"] });
     },
     onError: (error) => {
-      toast.error("Failed to Delete category");
+      toast.error(error.message || "Failed to delete category");
     },
   });
   return mutation;

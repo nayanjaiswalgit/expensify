@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { insertAccountSchema } from "@/db/schema";
+import { insertCategorySchema } from "@/db/schema"; // Update schema import
 import {
   Form,
   FormControl,
@@ -15,11 +15,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const fromSchema = insertAccountSchema.pick({
+const formSchema = insertCategorySchema.pick({
   name: true,
 });
 
-type FormValues = z.input<typeof fromSchema>;
+type FormValues = z.infer<typeof formSchema>; // Correct the type inference
 
 type Props = {
   id?: string;
@@ -37,7 +37,7 @@ const CategoryForm = ({
   disabled,
 }: Props) => {
   const form = useForm<FormValues>({
-    resolver: zodResolver(fromSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: defaultValue,
   });
 
@@ -48,10 +48,11 @@ const CategoryForm = ({
   const handleDelete = () => {
     onDelete?.();
   };
+
   return (
     <Form {...form}>
       <form
-        className=" space-y-4 pt-4"
+        className="space-y-4 pt-4"
         onSubmit={form.handleSubmit(handleSubmit)}
       >
         <FormField
@@ -63,15 +64,16 @@ const CategoryForm = ({
               <FormControl>
                 <Input
                   disabled={disabled}
-                  placeholder="e.g. Cash, Bank, Credit Card"
+                  placeholder="e.g. Food, Utilities, Entertainment"
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <Button className="w-full" disabled={disabled}>
-          {id ? "Save chnages" : "Create Account"}
+          {id ? "Save Changes" : "Create Category"}
         </Button>
         {!!id && (
           <Button
@@ -82,7 +84,7 @@ const CategoryForm = ({
             variant="outline"
           >
             <Trash className="size-4 mr-2" />
-            Delete account
+            Delete Category
           </Button>
         )}
       </form>
@@ -90,4 +92,4 @@ const CategoryForm = ({
   );
 };
 
-export default AccountForm;
+export default CategoryForm;

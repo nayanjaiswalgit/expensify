@@ -24,7 +24,7 @@ export const Select = ({
     onChange(option?.value);
   };
   const formattedValue = useMemo(() => {
-    return options.find((option) => option.label === value);
+    return options?.find((option) => option.value === value);
   }, [options, value]);
 
   return (
